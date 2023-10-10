@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>A Meaningful Page Title</title>
+  <link rel="stylesheet" href="style2.css">
+  <style>
+    /* Add this CSS rule to hide the submenu by default */
+    #subnav-div {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!--start maindiv-->
+<div id="main-div" class="clearfix">
+  <!--start leftside div-->
+  <div id="leftside-div"> 
+    LeftSide
+     <!--start of navbar div-->
+    <div id="navbar-div">
+      <ul>
+       <!-- Start of File Submenu -->
+<li id="file-menu-container">
+	<a href="#">File</a>
+	<!-- Add the submenu-div inside the list item -->
+	<div class="submenu-div">
+	  <div class="submenu-file-div">
+		<a href="#" onclick="loadCSVFile();">Load CSV file</a>
+		<a href="#">Login to DB</a>
+		<a href="#">Logout DB</a>
+		<a href="#">Exit file</a>
+	  </div>
+	</div>
+  </li>
+  <!-- End of File Submenu -->
+  
+        <!--End of File Submenu-->
+
+        <!--Start of View Submenu-->
+        <li id="view-menu-container">
+          <a href="#">View</a>
+          <div id="view-subnav-div">
+            <div class="submenu-view-div">
+              <a href="#">Line</a>
+              <a href="#">Pie</a>
+              <a href="#">Bar</a>
+              <a href="#">Map</a>
+            </div>
+            <!--end of submenu view div-->
+          </div>
+          <!--end of view subnav div-->
+        </li>
+        <!--End of View Submenu-->
+
+        <!--Start of Setting Submenu-->
+        <li id="setting-menu-container">
+          <a href="#">Setting</a>
+          <div id="setting-subnav-div">
+            <div class="submenu-setting-div">
+              <a href="#">User Info</a>
+            </div>
+            <!--end of submenu setting div-->
+          </div>
+          <!--end of setting subnav div-->
+        </li>
+        <!--End of Setting Submenu-->
+
+        <!--Start of Help Submenu-->
+        <li id="help-menu-container">
+          <a href="#">Help</a>
+          <div id="help-subnav-div">
+            <div class="submenu-help-div">
+              <a href="#">Info</a>
+              <a href="#">Client</a>
+            </div>
+            <!--end of submenu help div-->
+          </div>
+          <!--end of help subnav div-->
+        </li>
+        <!--End of Help Submenu-->
+      </ul>
+    </div>
+    <!--end of navbar div-->
+  </div> 
+  <!--leftside end of div-->
+
+  <!--start of righttop div-->
+  <div id="righttop-div">
+    This is a graph
+  </div>
+  <!--end of righttop div-->
+
+  <!--start of rightbottom div-->
+  <div id="rightbottom-div">
+    <div id="message-area"></div>
+    <table id="csv-table"></table>
+  </div>
+  <!--end of rightbottom div-->
+</div>
+<!--end of maindiv-->
+
+<!-- Hidden input element for file selection -->
+<input type="file" id="csvFileInput" style="display: none;">
+
+<script>
+  // Function to handle opening the file input dialog
+  function loadCSVFile() {
+    document.getElementById('csvFileInput').click();
+  }
+  
+  // Function to handle CSV file selection and loading
+  document.getElementById('csvFileInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const tableDiv = document.getElementById('rightbottom-div');
+    const messageDiv = document.getElementById('message-area');
+    const csvTable = document.getElementById('csv-table');
+  
+    if (file) {
+      // Check if the selected file is a CSV
+      if (file.name.endsWith('.csv')) {
+        // File is a CSV, proceed with loading
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const contents = e.target.result;
+          const lines = contents.split('\n');
+          
+          // Parse CSV data and create an HTML table
+          let html = '<table>';
+          for (let i = 0; i < lines.length; i++) {
+            html += '<tr>';
+            const cells = lines[i].split(',');
+            for (const cell of cells) {
+              if (i === 0) {
+                html += '<th>' + cell + '</th>';
+              } else {
+                html += '<td>' + cell + '</td>';
+              }
+            }
+            html += '</tr>';
+          }
+          html += '</table>';
+  
+          // Clear previous content and append the new table
+          csvTable.innerHTML = html;
+  
+          // Display the number of records in the message area
+          messageDiv.textContent = `Number of records: ${lines.length - 1}`;
+        };
+        reader.readAsText(file);
+      } else {
+        // File is not a CSV, display an error message
+        messageDiv.textContent = 'The data is in the wrong format. Only CSV files can be loaded!';
+        csvTable.innerHTML = ''; // Clear any existing table or graph
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

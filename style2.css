@@ -1,0 +1,248 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+  }
+  
+  /* Main container covering the whole page */
+  #main-div {
+	width: 100%;
+	height: 100vh; /* 100% of viewport height */
+  }
+  
+  /* Left sidebar */
+  #leftside-div {
+	width: 25%;
+	min-height: 100vh; /* Take up the full height of the viewport */
+	background-color: white;
+	float: left;
+	border: 2px solid black;
+	position: relative; /* Add position relative */
+	z-index: 1; /* Lower z-index value for the left sidebar */
+  }
+  
+  /* Right top content */
+  #righttop-div {
+	width: 75%;
+	min-height: 400px;
+	background-color: grey;
+	border: 1px solid black;
+	float: right;
+  }
+  
+/* Your existing CSS up to #rightbottom-div */
+
+#rightbottom-div {
+	width: 75%;
+	background-color: grey;
+	border: 1px solid black;
+	/* Remove overflow-y property */
+	/* overflow-y: auto; */
+	min-height: calc(100vh - 400px); /* Adjust the subtraction value as needed */
+	display: flex;
+	flex-direction: column;
+  }
+  
+  
+  /* Clearfix for floated elements */
+  .clearfix::after {
+	content: "";
+	display: block;
+	clear: both;
+  }
+  
+  /* Navbar styles (adjust as needed) */
+  #navbar-div {
+	width: 25%;
+	min-height: 20px;
+	background-color: cyan;
+	border: 2px solid black;
+	position: fixed;
+	left: 0;
+	top: 0;
+	text-align: center;
+  }
+
+#navbar-div ul
+{
+	/*display: inline-flex;*/
+	list-style: none;
+	color: black;
+	padding:0;
+	margin:0;
+	
+}
+
+#navbar-div ul li
+{
+	display: inline-block; /*Display li elements inline*/
+	/*width: auto;*/
+	margin:5px;
+	padding:2px;
+	
+}
+
+#navbar-div ul li a
+{
+	text-decoration:none;
+	color:black;
+}
+
+#navbar-div ul li:hover
+{
+	background:lightgrey;
+	border-radius:3px;
+}
+
+#subnav-div 
+{ 
+	display: none;
+	position: absolute;
+	background-color: white;
+	border: 1px solid black;
+}
+
+
+.submenu-file-div
+{
+	display: flex;
+	flex-direction: column;
+}
+
+
+.submenu-file-div a
+{
+	text-decoration: none;
+	color: black;
+	padding: 5px;
+	border-bottom: 1px solid black;
+}
+
+#file-menu:hover #subnav-div
+{
+	display:block;
+}
+
+/*sub menu color when hovered */
+#subnav-div .submenu-file-div a:hover 
+{
+	background-color: lightgrey; /*Makes the hover background color as desired */
+}
+
+#view-menu-container:hover #view-subnav-div
+{
+	display:block
+}
+
+#view-subnav-div
+{
+	display:none;
+	position: absolute;
+	background-color: white;
+	border: 1px solid black;
+}
+
+#view-subnav-div .submenu-view-div
+{
+	display: flex;
+	flex-direction: column;
+}
+
+#view-subnav-div .submenu-view-div a
+{
+	text-decoration: none;
+	color: black;
+	padding: 5px;
+	border-bottom: 1px solid black;
+}
+
+#view-subnav-div .submenu-view-div a:hover
+{
+	background-color: lightgrey; /*Makes the hover background color as desired */
+}
+
+
+
+#setting-menu-container:hover #setting-subnav-div
+{
+	display:block
+}
+
+#setting-subnav-div
+{
+	display:none;
+	position: absolute;
+	background-color: white;
+	border: 1px solid black;
+}
+
+#setting-subnav-div .submenu-setting-div
+{
+	display: flex;
+	flex-direction: column;
+}
+
+#setting-subnav-div .submenu-setting-div a
+{
+	text-decoration: none;
+	color: black;
+	padding: 5px;
+	border-bottom: 1px solid black;
+}
+
+#setting-subnav-div .submenu-setting-div a:hover
+{
+	background-color: lightgrey; /*Makes the hover background color as desired */
+}
+
+
+
+#help-menu-container:hover #help-subnav-div
+{
+	display:block
+}
+
+#help-subnav-div
+{
+	display:none;
+	position: absolute;
+	background-color: white;
+	border: 1px solid black;
+}
+
+#help-subnav-div .submenu-help-div
+{
+	display: flex;
+	flex-direction: column;
+}
+
+#help-subnav-div .submenu-help-div a
+{
+	text-decoration: none;
+	color: black;
+	padding: 5px;
+	border-bottom: 1px solid black;
+}
+
+#help-subnav-div .submenu-help-div a:hover
+{
+	background-color: lightgrey; /*Makes the hover background color as desired */
+}
+/* Add this CSS rule to style the submenu */
+.submenu-div {
+	display: none;
+	position: absolute;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	z-index: 2; /* Higher z-index value for the submenu */
+  }
+  
+  /* Add this CSS rule to display the submenu on hover */
+  #file-menu-container:hover .submenu-div {
+	display: block;
+  }
+  #csvFileInput {
+	display: none;
+  }
+  
+  
