@@ -34,14 +34,18 @@
 
 #rightbottom-div {
 	width: 75%;
-	background-color: grey;
+	min-height: 730px; /* Set a minimum height as needed */
+	max-height: calc(79vh - 100px); /* Adjust the value to your needs */
+	background-color: rgb(160, 160, 138);
 	border: 1px solid black;
-	/* Remove overflow-y property */
-	/* overflow-y: auto; */
-	min-height: calc(100vh - 400px); /* Adjust the subtraction value as needed */
 	display: flex;
 	flex-direction: column;
+	overflow-y: auto; /* Add this property to enable vertical scrolling if necessary */
+	flex: 1; /* Use flex to make the div take up remaining vertical space */
   }
+  
+  
+  
   
   
   /* Clearfix for floated elements */
@@ -243,6 +247,12 @@
   }
   #csvFileInput {
 	display: none;
+  }
+  
+  #csv-table {
+	max-height: 100%; /* This will ensure the table won't exceed the height of its container */
+	width: 100%;
+	border-collapse: collapse;
   }
   
   
