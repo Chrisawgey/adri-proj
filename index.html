@@ -21,19 +21,19 @@
     <div id="navbar-div">
       <ul>
        <!-- Start of File Submenu -->
-<li id="file-menu-container">
-	<a href="#">File</a>
-	<!-- Add the submenu-div inside the list item -->
-	<div class="submenu-div">
-	  <div class="submenu-file-div">
-		<a href="#" onclick="loadCSVFile();">Load CSV file</a>
-		<a href="#">Login to DB</a>
-		<a href="#">Logout DB</a>
-		<a href="#">Exit file</a>
-	  </div>
-	</div>
-  </li>
-  <!-- End of File Submenu -->
+        <li id="file-menu-container">
+          <a href="#">File</a>
+          <!-- Add the submenu-div inside the list item -->
+          <div class="submenu-div">
+            <div class="submenu-file-div">
+              <a href="#" onclick="loadCSVFile();">Load CSV file</a>
+              <a href="#" onclick="loginToDB();">Login to DB</a>
+              <a href="#" onclick="confirmLogout();">Logout DB</a>
+              <a href="#">Exit file</a>
+            </div>
+          </div>
+        </li>
+        <!-- End of File Submenu -->
   
         <!--End of File Submenu-->
 
@@ -62,7 +62,6 @@
             </div>
             <!--end of submenu setting div-->
           </div>
-          <!--end of setting subnav div-->
         </li>
         <!--End of Setting Submenu-->
 
@@ -74,9 +73,7 @@
               <a href="#">Info</a>
               <a href="#">Client</a>
             </div>
-            <!--end of submenu help div-->
           </div>
-          <!--end of help subnav div-->
         </li>
         <!--End of Help Submenu-->
       </ul>
@@ -111,50 +108,44 @@
   
   // Function to handle CSV file selection and loading
   document.getElementById('csvFileInput').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    const tableDiv = document.getElementById('rightbottom-div');
-    const messageDiv = document.getElementById('message-area');
-    const csvTable = document.getElementById('csv-table');
-  
-    if (file) {
-      // Check if the selected file is a CSV
-      if (file.name.endsWith('.csv')) {
-        // File is a CSV, proceed with loading
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const contents = e.target.result;
-          const lines = contents.split('\n');
-          
-          // Parse CSV data and create an HTML table
-          let html = '<table>';
-          for (let i = 0; i < lines.length; i++) {
-            html += '<tr>';
-            const cells = lines[i].split(',');
-            for (const cell of cells) {
-              if (i === 0) {
-                html += '<th>' + cell + '</th>';
-              } else {
-                html += '<td>' + cell + '</td>';
-              }
-            }
-            html += '</tr>';
-          }
-          html += '</table>';
-  
-          // Clear previous content and append the new table
-          csvTable.innerHTML = html;
-  
-          // Display the number of records in the message area
-          messageDiv.textContent = `Number of records: ${lines.length - 1}`;
-        };
-        reader.readAsText(file);
-      } else {
-        // File is not a CSV, display an error message
-        messageDiv.textContent = 'The data is in the wrong format. Only CSV files can be loaded!';
-        csvTable.innerHTML = ''; // Clear any existing table or graph
-      }
-    }
+    // ... (your existing code for loading CSV)
   });
+
+  // Function to handle DB login
+  function loginToDB() {
+    // Prompt the user for login and password
+    const login = prompt("Enter login:");
+    const password = prompt("Enter password:");
+
+    // Simulate database verification (you should replace this with an actual AJAX request)
+    if (login === "user" && password === "pass") {
+      // Successful login
+      const messageDiv = document.getElementById('message-area');
+      messageDiv.textContent = "Welcome, " + login;
+      
+      // Store user information in the browser (you can use localStorage or sessionStorage)
+      sessionStorage.setItem("user", login);
+    } else {
+      // Failed login
+      const messageDiv = document.getElementById('message-area');
+      messageDiv.textContent = "Login failed. Please try again.";
+    }
+  }
+
+  // Function to confirm logout
+  function confirmLogout() {
+    // Ask the user to confirm logout
+    const confirmLogout = confirm("Are you sure you want to logout?");
+
+    if (confirmLogout) {
+      // Clear user information from the browser
+      sessionStorage.removeItem("user");
+
+      // Display "Successful logout" message
+      const messageDiv = document.getElementById('message-area');
+      messageDiv.textContent = "Successful logout";
+    }
+  }
 </script>
 
 </body>
