@@ -17,10 +17,10 @@
   <!--start leftside div-->
   <div id="leftside-div"> 
     LeftSide
-     <!--start of navbar div-->
+    <!--start of navbar div-->
     <div id="navbar-div">
       <ul>
-       <!-- Start of File Submenu -->
+        <!-- Start of File Submenu -->
         <li id="file-menu-container">
           <a href="#">File</a>
           <!-- Add the submenu-div inside the list item -->
@@ -29,7 +29,7 @@
               <a href="#" onclick="loadCSVFile();">Load CSV file</a>
               <a href="#" onclick="loginToDB();">Login to DB</a>
               <a href="#" onclick="confirmLogout();">Logout DB</a>
-              <a href="#">Exit file</a>
+              <a href="#" onclick="exit();">Exit</a> <!-- Added Exit option -->
             </div>
           </div>
         </li>
@@ -42,10 +42,9 @@
           <a href="#">View</a>
           <div id="view-subnav-div">
             <div class="submenu-view-div">
-              <a href="#">Line</a>
-              <a href="#">Pie</a>
-              <a href="#">Bar</a>
-              <a href="#">Map</a>
+              <a href="#" onclick="runGraph('Bar');">Bar</a>
+              <a href="#" onclick="runGraph('Line');">Line</a>
+              <a href="#" onclick="runGraph('Pie');">Pie</a>
             </div>
             <!--end of submenu view div-->
           </div>
@@ -92,6 +91,18 @@
   <div id="rightbottom-div">
     <div id="message-area"></div>
     <table id="csv-table"></table>
+
+    <!-- Add data selection area -->
+    <div id="data-selection">
+      <p>Please select one of the following choices, and then run one of the graphs in the View menu. Note: The empty, NULL, or NaN values will be excluded.</p>
+      <label for="avgWages">AvgWages (Bar, Line)</label>
+<input type="radio" id="avgWages" name="data" value="avgWages">
+<label for="estimatedPopulation">EstimatedPopulation (Bar, Line)</label>
+<input type="radio" id="estimatedPopulation" name="data" value="estimatedPopulation"> <!-- Fix the type attribute -->
+<label for="state">State (Bar, Pie)</label>
+<input type="radio" id="state" name="data" value="state">
+
+    </div>
   </div>
   <!--end of rightbottom div-->
 </div>
@@ -108,7 +119,17 @@
   
   // Function to handle CSV file selection and loading
   document.getElementById('csvFileInput').addEventListener('change', function(event) {
-    // ... (your existing code for loading CSV)
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const csvData = e.target.result;
+        // Process the CSV data here.
+      };
+
+      reader.readAsText(file);
+    }
   });
 
   // Function to handle DB login
@@ -118,7 +139,7 @@
     const password = prompt("Enter password:");
 
     // Simulate database verification (you should replace this with an actual AJAX request)
-    if (login === "user" && password === "pass") {
+    if (login === "sampleuser" && password === "samplepassword") {
       // Successful login
       const messageDiv = document.getElementById('message-area');
       messageDiv.textContent = "Welcome, " + login;
@@ -144,6 +165,38 @@
       // Display "Successful logout" message
       const messageDiv = document.getElementById('message-area');
       messageDiv.textContent = "Successful logout";
+    }
+  }
+
+  // Function to exit and close the current tab or window
+  function exit() {
+    // Clean any memory or resources here (if needed)
+    
+    // Close the current browser tab or window
+    window.close();
+  }
+
+  // Function to handle running the selected graph
+  function runGraph(graphType) {
+    const selectedData = document.querySelector('input[name="data"]:checked');
+
+    if (!selectedData) {
+      alert("Please select a data type first.");
+      return;
+    }
+
+    const data = selectedData.value;
+
+    // Here, you can use the 'data' variable to determine which graph type to generate based on the selected data.
+    if (data === "avgWages") {
+      // Generate the graph for AvgWages
+      // Example: generateBarGraph(graphType);
+    } else if (data === "estimatedPopulation") {
+      // Generate the graph for EstimatedPopulation
+      // Example: generateLineGraph(graphType);
+    } else if (data === "state") {
+      // Generate the graph for State
+      // Example: generatePieChart(graphType);
     }
   }
 </script>
