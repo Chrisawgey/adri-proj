@@ -3,13 +3,13 @@
 	padding: 0;
 	box-sizing: border-box;
   }
-  
+
   /* Main container covering the whole page */
   #main-div {
 	width: 100%;
 	height: 100vh; /* 100% of viewport height */
   }
-  
+
   /* Left sidebar */
   #leftside-div {
 	width: 25%;
@@ -20,41 +20,37 @@
 	position: relative; /* Add position relative */
 	z-index: 1; /* Lower z-index value for the left sidebar */
   }
-  
+
   /* Right top content */
   #righttop-div {
 	width: 75%;
 	min-height: 400px;
-	background-color: grey;
+	background-color: #808080;
 	border: 1px solid black;
 	float: right;
   }
-  
+
 /* Your existing CSS up to #rightbottom-div */
 
 #rightbottom-div {
 	width: 75%;
-	min-height: 730px; /* Set a minimum height as needed */
-	max-height: calc(79vh - 100px); /* Adjust the value to your needs */
-	background-color: rgb(160, 160, 138);
+	background-color: grey;
 	border: 1px solid black;
+	overflow-y: auto; /* Add this to enable vertical scrolling */
+	max-height: calc(100vh - 400px); /* Add max-height to set a limit and allow scrolling */
 	display: flex;
 	flex-direction: column;
-	overflow-y: auto; /* Add this property to enable vertical scrolling if necessary */
-	flex: 1; /* Use flex to make the div take up remaining vertical space */
   }
   
-  
-  
-  
-  
+
+
   /* Clearfix for floated elements */
   .clearfix::after {
 	content: "";
 	display: block;
 	clear: both;
   }
-  
+
   /* Navbar styles (adjust as needed) */
   #navbar-div {
 	width: 25%;
@@ -74,7 +70,7 @@
 	color: black;
 	padding:0;
 	margin:0;
-	
+
 }
 
 #navbar-div ul li
@@ -83,7 +79,7 @@
 	/*width: auto;*/
 	margin:5px;
 	padding:2px;
-	
+
 }
 
 #navbar-div ul li a
@@ -240,48 +236,70 @@
 	border: 1px solid #ccc;
 	z-index: 2; /* Higher z-index value for the submenu */
   }
-  
+
   /* Add this CSS rule to display the submenu on hover */
   #file-menu-container:hover .submenu-div {
 	display: block;
   }
-  
   #csvFileInput {
 	display: none;
   }
-  
-  #csv-table {
-	max-height: 100%; /* This will ensure the table won't exceed the height of its container */
-	width: 100%;
-	border-collapse: collapse;
+  /* Add this CSS rule to hide the login popup by default */
+/* CSS for the login popup */
+#login-popup {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border: 1px solid black;
+	padding: 20px;
+	z-index: 3;
+	text-align: center;
+  }
+
+  #subnav-div {
+	display: none;
+  }
+  /* CSS for the logout popup */
+  #logout-popup {
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border: 1px solid black;
+	padding: 20px;
+	z-index: 3;
+	text-align: center;
   }
   
-  /* Style for the login and password input */
-  .login-input {
-	margin: 10px;
-	padding: 5px;
+  /* Style the data selection options */
+#data-selection {
+	margin: 50px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	background-color: #f5f5f5;
+	border-radius: 5px;
   }
   
-  /* Style for the login button */
-  .login-button {
-	margin: 10px;
-	padding: 5px 10px;
-	background-color: #007bff;
-	color: #fff;
-	border: none;
-	cursor: pointer;
+  /* Style the radio buttons and labels */
+  #data-selection input[type="radio"] {
+	margin-right: 10px; /* Add some space between radio buttons and labels */
   }
   
-  /* Style for the error message */
-  .error-message {
-	color: red;
-	margin: 10px;
+  #data-selection label {
+	display: inline-block;
+	margin-right: 20px; /* Add space between labels */
+	font-weight: bold; /* Make the labels bold */
   }
   
-  /* Style for the success message */
-  .success-message {
-	color: green;
-	margin: 10px;
+  /* Style the paragraph above the radio buttons */
+  #data-selection p {
+	margin-bottom: 10px;
+	font-style: italic; /* Make it italic */
+	color: #888; /* Change the text color */
   }
-  
   

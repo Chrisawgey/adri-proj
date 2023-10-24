@@ -3,12 +3,7 @@
 <head>
   <title>A Meaningful Page Title</title>
   <link rel="stylesheet" href="style2.css">
-  <style>
-    /* Add this CSS rule to hide the submenu by default */
-    #subnav-div {
-      display: none;
-    }
-  </style>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
 
@@ -16,25 +11,31 @@
 <div id="main-div" class="clearfix">
   <!--start leftside div-->
   <div id="leftside-div"> 
-    LeftSide
-    <!--start of navbar div-->
+    <div id="data-selection">
+      <p>Please select one of the following choice, and then run one of the graphs in the View menu. Note: The empty, NULL, or NaN value will be excluded</p>
+    <input type="radio" name="data-selection" id="avg-wages-radio" value="AvgWages" /> AvgWages (Bar, Line)<br>
+    <input type="radio" name="data-selection" id="estimated-population-radio" value="EstimatedPopulation" /> EstimatedPopulation (Bar, Line)<br>
+    <input type="radio" name="data-selection" id="state-radio" value="State" /> State (Bar, Pie)
+    </div>
+    
+     <!--start of navbar div-->
     <div id="navbar-div">
       <ul>
-        <!-- Start of File Submenu -->
-        <li id="file-menu-container">
-          <a href="#">File</a>
-          <!-- Add the submenu-div inside the list item -->
-          <div class="submenu-div">
-            <div class="submenu-file-div">
-              <a href="#" onclick="loadCSVFile();">Load CSV file</a>
-              <a href="#" onclick="loginToDB();">Login to DB</a>
-              <a href="#" onclick="confirmLogout();">Logout DB</a>
-              <a href="#" onclick="exit();">Exit</a> <!-- Added Exit option -->
-            </div>
-          </div>
-        </li>
-        <!-- End of File Submenu -->
-  
+       <!-- Start of File Submenu -->
+<li id="file-menu-container">
+	<a href="#">File</a>
+	<!-- Add the submenu-div inside the list item -->
+	<div class="submenu-div">
+	  <div class="submenu-file-div">
+		<a href="#" onclick="loadCSVFile();">Load CSV file</a>
+		<a href="#" onclick="showLoginPopup();">Login to DB</a>
+		<a href="#" onclick="showLogoutPopup();">Logout DB</a>
+		<a href="#" onclick="exitApplication();">Exit</a>
+	  </div>
+	</div>
+  </li>
+  <!-- End of File Submenu -->
+
         <!--End of File Submenu-->
 
         <!--Start of View Submenu-->
@@ -42,9 +43,10 @@
           <a href="#">View</a>
           <div id="view-subnav-div">
             <div class="submenu-view-div">
-              <a href="#" onclick="runGraph('Bar');">Bar</a>
-              <a href="#" onclick="runGraph('Line');">Line</a>
-              <a href="#" onclick="runGraph('Pie');">Pie</a>
+              <a href="#" onclick="handleViewSubMenuClick('Line');">Line</a>
+              <a href="#" onclick="handleViewSubMenuClick('Pie');">Pie</a>
+              <a href="#" onclick="handleViewSubMenuClick('Bar');">Bar</a>
+              <a href="#">Map</a>
             </div>
             <!--end of submenu view div-->
           </div>
@@ -61,6 +63,7 @@
             </div>
             <!--end of submenu setting div-->
           </div>
+          <!--end of setting subnav div-->
         </li>
         <!--End of Setting Submenu-->
 
@@ -72,7 +75,9 @@
               <a href="#">Info</a>
               <a href="#">Client</a>
             </div>
+            <!--end of submenu help div-->
           </div>
+          <!--end of help subnav div-->
         </li>
         <!--End of Help Submenu-->
       </ul>
@@ -84,6 +89,8 @@
   <!--start of righttop div-->
   <div id="righttop-div">
     This is a graph
+    <!-- Add a div for the Google Chart -->
+    <div id="chart-div"></div>
   </div>
   <!--end of righttop div-->
 
@@ -91,18 +98,6 @@
   <div id="rightbottom-div">
     <div id="message-area"></div>
     <table id="csv-table"></table>
-
-    <!-- Add data selection area -->
-    <div id="data-selection">
-      <p>Please select one of the following choices, and then run one of the graphs in the View menu. Note: The empty, NULL, or NaN values will be excluded.</p>
-      <label for="avgWages">AvgWages (Bar, Line)</label>
-<input type="radio" id="avgWages" name="data" value="avgWages">
-<label for="estimatedPopulation">EstimatedPopulation (Bar, Line)</label>
-<input type="radio" id="estimatedPopulation" name="data" value="estimatedPopulation"> <!-- Fix the type attribute -->
-<label for="state">State (Bar, Pie)</label>
-<input type="radio" id="state" name="data" value="state">
-
-    </div>
   </div>
   <!--end of rightbottom div-->
 </div>
@@ -112,94 +107,242 @@
 <input type="file" id="csvFileInput" style="display: none;">
 
 <script>
+   // Initialize Google Charts
+   google.charts.load('current', {'packages': ['corechart']});
+google.charts.setOnLoadCallback(initialize);
+
+  // Function to handle submenu click in the "View" menu
+  function handleViewSubMenuClick(subMenu) {
+    const messageDiv = document.getElementById('message-area');
+    const csvTable = document.getElementById('csv-table');
+    const chartDiv = document.getElementById('chart-div');
+
+    if (csvTable && csvTable.rows.length <= 1) {
+      // Check if the table section contains no data
+      messageDiv.textContent = 'Please load data first';
+      chartDiv.innerHTML = ''; // Clear the chart
+    } else {
+      // If data is loaded, you can perform the action for the selected sub-menu here
+      messageDiv.textContent = ''; // Clear the message area
+      displayGoogleChart(subMenu); // Display the Google Chart in the right top div
+    }
+  }
+
+  // Function to display a Google Chart based on the selected choice
+  function displayGoogleChart(chartType) {
+    const messageDiv = document.getElementById('message-area');
+    const csvTable = document.getElementById('csv-table');
+    const chartDiv = document.getElementById('chart-div');
+
+    if (csvTable && csvTable.rows.length <= 1) {
+      // Check if the table section contains no data
+      messageDiv.textContent = 'Please load data first';
+    } else {
+      // If data is loaded, you can perform the action for the selected choice
+      if (isChartAllowed(chartType)) {
+        // Clear any existing message and display the chart
+        messageDiv.textContent = '';
+        drawGoogleChart(chartType, chartDiv);
+      } else {
+        // Display a message if the selected choice is not allowed
+        messageDiv.textContent = 'Chart type not allowed for this choice';
+      }
+    }
+  }
+
+  // Function to check if the selected chart is allowed for the chosen data
+  function isChartAllowed(chartType) {
+    const selectedData = document.querySelector('input[name="data-selection"]:checked').value;
+    if ((selectedData === 'AvgWages' || selectedData === 'EstimatedPopulation') && (chartType === 'Line' || chartType === 'Bar')) {
+      return true;
+    } else if (selectedData === 'State' && (chartType === 'Pie' || chartType === 'Bar')) {
+      return true;
+    }
+    return false;
+  }
+
+  // Define the drawGoogleChart function to create Google Charts
+
+  function drawGoogleChart(chartType, chartDiv) {
+    // Define your chart data and options and draw the chart here
+  }
+
+
+
+  // Function to check login credentials
+  function checkLogin() {
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const messageDiv = document.getElementById('message-area');
+  
+    // Replace this with actual authentication logic on the server
+    // In this example, we'll use a hard-coded username and password for demonstration purposes
+    const hardcodedUsername = 'adri';
+    const hardcodedPassword = 'alta';
+
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+
+    if (username === hardcodedUsername && password === hardcodedPassword) {
+      // Authentication successful
+      messageDiv.textContent = 'Welcome, ' + username;
+      // Store user information in the browser (you may want to use localStorage or cookies for this)
+      localStorage.setItem('username', username);
+    } else {
+      // Authentication failed
+      messageDiv.textContent = 'Login failed. Please try again.';
+    }
+
+    // Hide the login popup
+    const loginPopup = document.getElementById('login-popup');
+    loginPopup.style.display = 'none';
+
+    // Prevent the form from submitting
+    return false;
+  }
+
+  // Function to show the login popup
+  function showLoginPopup() {
+    const loginPopup = document.getElementById('login-popup');
+    loginPopup.style.display = 'block';
+  }
+
+  // Function to show the logout popup
+  function showLogoutPopup() {
+    const logoutPopup = document.getElementById('logout-popup');
+    logoutPopup.style.display = 'block';
+  }
+
+  // Function to confirm logout
+function confirmLogout() {
+  const confirmation = confirm("Are you sure you want to logout?");
+  if (confirmation) {
+    // User confirmed logout, clear user information
+    localStorage.removeItem('username');
+    const messageDiv = document.getElementById('message-area');
+    messageDiv.textContent = 'Successful logout';
+  }
+  hideLogoutPopup(); // Hide the logout popup
+  return false; // Prevent form submission
+}
+
+
+  // Function to cancel logout
+  function cancelLogout() {
+    hideLogoutPopup();
+  }
+
+  // Function to hide the logout popup
+  function hideLogoutPopup() {
+    const logoutPopup = document.getElementById('logout-popup');
+    logoutPopup.style.display = 'none';
+  }
+
+  // Function to handle the "Exit" action
+  function exitApplication() {
+    const confirmation = confirm("Are you sure you want to exit?");
+    if (confirmation) {
+      window.close(); // Close the current tab or window
+    }
+  }
+
+  // Function to handle submenu click in the "View" menu
+function handleViewSubMenuClick(subMenu) {
+  const messageDiv = document.getElementById('message-area');
+  const csvTable = document.getElementById('csv-table');
+
+  if (csvTable && csvTable.rows.length <= 1) {
+    // Check if the table section contains no data
+    messageDiv.textContent = 'Please load data first';
+    // Clear any existing table or graph
+    csvTable.innerHTML = '';
+  } else {
+    // If data is loaded, you can perform the action for the selected sub-menu here
+    messageDiv.textContent = ''; // Clear the message area
+    // Add your logic to handle the selected sub-menu (e.g., displaying the graph)
+  }
+}
+
+// Attach click event handlers to submenu items in the "View" menu
+const viewSubMenus = document.querySelectorAll('#view-subnav-div .submenu-view-div a');
+viewSubMenus.forEach(subMenu => {
+  subMenu.addEventListener('click', function (event) {
+    handleViewSubMenuClick(event.target.textContent);
+  });
+});
+
   // Function to handle opening the file input dialog
   function loadCSVFile() {
     document.getElementById('csvFileInput').click();
   }
-  
+
   // Function to handle CSV file selection and loading
   document.getElementById('csvFileInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
+    const tableDiv = document.getElementById('rightbottom-div');
+    const messageDiv = document.getElementById('message-area');
+    const csvTable = document.getElementById('csv-table');
+
     if (file) {
-      const reader = new FileReader();
+      // Check if the selected file is a CSV
+      if (file.name.endsWith('.csv')) {
+        // File is a CSV, proceed with loading
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const contents = e.target.result;
+          const lines = contents.split('\n');
 
-      reader.onload = function(e) {
-        const csvData = e.target.result;
-        // Process the CSV data here.
-      };
+          // Parse CSV data and create an HTML table
+          let html = '<table>';
+          for (let i = 0; i < lines.length; i++) {
+            html += '<tr>';
+            const cells = lines[i].split(',');
+            for (const cell of cells) {
+              if (i === 0) {
+                html += '<th>' + cell + '</th>';
+              } else {
+                html += '<td>' + cell + '</td>';
+              }
+            }
+            html += '</tr>';
+          }
+          html += '</table>';
 
-      reader.readAsText(file);
+          // Clear previous content and append the new table
+          csvTable.innerHTML = html;
+
+          // Display the number of records in the message area
+          messageDiv.textContent = `Number of records: ${lines.length - 1}`;
+        };
+        reader.readAsText(file);
+      } else {
+        // File is not a CSV, display an error message
+        messageDiv.textContent = 'The data is in the wrong format. Only CSV files can be loaded!';
+        csvTable.innerHTML = ''; // Clear any existing table or graph
+      }
     }
   });
-
-  // Function to handle DB login
-  function loginToDB() {
-    // Prompt the user for login and password
-    const login = prompt("Enter login:");
-    const password = prompt("Enter password:");
-
-    // Simulate database verification (you should replace this with an actual AJAX request)
-    if (login === "sampleuser" && password === "samplepassword") {
-      // Successful login
-      const messageDiv = document.getElementById('message-area');
-      messageDiv.textContent = "Welcome, " + login;
-      
-      // Store user information in the browser (you can use localStorage or sessionStorage)
-      sessionStorage.setItem("user", login);
-    } else {
-      // Failed login
-      const messageDiv = document.getElementById('message-area');
-      messageDiv.textContent = "Login failed. Please try again.";
-    }
-  }
-
-  // Function to confirm logout
-  function confirmLogout() {
-    // Ask the user to confirm logout
-    const confirmLogout = confirm("Are you sure you want to logout?");
-
-    if (confirmLogout) {
-      // Clear user information from the browser
-      sessionStorage.removeItem("user");
-
-      // Display "Successful logout" message
-      const messageDiv = document.getElementById('message-area');
-      messageDiv.textContent = "Successful logout";
-    }
-  }
-
-  // Function to exit and close the current tab or window
-  function exit() {
-    // Clean any memory or resources here (if needed)
-    
-    // Close the current browser tab or window
-    window.close();
-  }
-
-  // Function to handle running the selected graph
-  function runGraph(graphType) {
-    const selectedData = document.querySelector('input[name="data"]:checked');
-
-    if (!selectedData) {
-      alert("Please select a data type first.");
-      return;
-    }
-
-    const data = selectedData.value;
-
-    // Here, you can use the 'data' variable to determine which graph type to generate based on the selected data.
-    if (data === "avgWages") {
-      // Generate the graph for AvgWages
-      // Example: generateBarGraph(graphType);
-    } else if (data === "estimatedPopulation") {
-      // Generate the graph for EstimatedPopulation
-      // Example: generateLineGraph(graphType);
-    } else if (data === "state") {
-      // Generate the graph for State
-      // Example: generatePieChart(graphType);
-    }
-  }
 </script>
+
+<!-- Add a login form inside a hidden div for the login popup -->
+<div id="login-popup" style="display: none;">
+  <form onsubmit="return checkLogin();">
+    <label for="username">Username:</label>
+    <input type="text" id="username" required><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required><br>
+    <input type="submit" value="Login">
+  </form>
+</div>
+
+<!-- Add a logout confirmation form inside a hidden div for the logout popup -->
+<div id="logout-popup" style="display: none;">
+  <form onsubmit="return confirmLogout();">
+    <label>Are you sure you want to logout?</label><br>
+    <input type="submit" value="Yes">
+    <input type="button" value="No" onclick="cancelLogout();">
+  </form>
+</div>
 
 </body>
 </html>
